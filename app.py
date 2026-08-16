@@ -2,34 +2,78 @@ import pandas as pd
 import plotly.express as px
 import streamlit as st
 
-st.header("Vehicle Sales Dashboard")
+st.set_page_config(
+    page_title="Vehicle Sales Dashboard",
+    page_icon="🚗",
+    layout="wide"
+)
 
-st.markdown("""  
-This interactive dashboard allows you to explore vehicle listing data.
-Use the controls below to generate visualizations.
-""")
+st.title("🚗 Vehicle Sales Dashboard")
+
+st.markdown(
+    """
+    Explore vehicle listing data through interactive visualizations.
+
+    Use the options below to analyze mileage distribution
+    and the relationship between mileage and vehicle price.
+    """
+)
 
 car_data = pd.read_csv("vehicles.csv")
 
-st.subheader("Dataset Preview")
+st.subheader("Dataset Overview")
 
-st.write(
-    f"The dataset contains {car_data.shape[0]} rows and {car_data.shape[1]} columns.")
-st.dataframe(car_data.head(8))
+col1, col2, col3 = st.columns(3)
 
-hist_button = st.button("Show Mileage Distribution")
+col1.metric("Total Listings", f"{car_data.shape[0]:,}")
+col2.metric("Average Price", f"${car_data['price'].mean():,.0f}")
+col3.metric("Average Mileage", f"{car_data['odometer'].mean():,.0f}")
 
-if hist_button:
-    st.write("This histogram shows the distribution of vehicle mileage.")
-    fig_hist = px.histogram(car_data, x="odometer",
-                            title="Mileage Distribution")
-    st.plotly_chart(fig_hist, use_container_width=True)
+with st.expander("View Dataset Sample"):
+    st.dataframe(car_data.head(10), use_container_width=True)
 
-scatter_button = st.button("Show Price vs Mileage Relationship")
+st.divider()
 
-if scatter_button:
-    st.write(
-        "This scatter plot shows the relationship between vehicle mileage and price.")
-    fig_scatter = px.scatter(car_data, x="odometer",
-                             y="price", title='Price vs Mileage')
-    st.plotly_chart(fig_scatter, use_container_width=True)
+st.subheader("Mileage Distribution")
+
+fig_hist = px.histogram(
+    car_data,
+    x="odometer",
+    nbins=50,
+    title="Distribution of Vehicle Mileage",
+    labels={"odometer": "Mileage"}
+)
+
+st.plotly_chart(fig_hist, use_container_width=True)
+
+st.markdown(
+    """
+    This visualization shows how vehicle mileage is distributed
+    across the listings in the dataset.
+    """
+)
+
+st.divider()
+
+st.subheader("Price vs. Mileage")
+
+fig_scatter = px.scatter(
+    car_data,
+    x="odometer",
+    y="price",
+    opacity=0.5,
+    title="Relationship Between Vehicle Price and Mileage",
+    labels={
+        "odometer": "Mileage",
+        "price": "Price"
+    }
+)
+
+st.plotly_chart(fig_scatter, use_container_width=True)
+
+st.markdown(
+    """
+    This chart helps explore whether vehicles with higher mileage
+    tend to have lower listing prices.
+    """
+)
