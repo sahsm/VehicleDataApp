@@ -13,7 +13,7 @@ The project demonstrates the development and deployment of an interactive data a
 Users can:
 
 - Preview a sample of the vehicle listings dataset
-- View the total number of rows and columns
+- View key dataset metrics including total listings, average price, and average mileage
 - Generate an interactive histogram of vehicle mileage
 - Explore the relationship between vehicle mileage and price using a scatter plot
 
